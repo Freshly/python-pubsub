@@ -22,6 +22,7 @@ at https://cloud.google.com/pubsub/docs.
 """
 
 import argparse
+import json
 
 
 def list_topics(project_id):
@@ -94,9 +95,14 @@ def publish_messages(project_id, topic_id):
     topic_path = publisher.topic_path(project_id, topic_id)
 
     for n in range(1, 10):
-        data = "Message number {}".format(n)
+        data_dict = {
+            "digest": "this is a digest",
+            "tag": "gcr.io/freshly-docker/canideploy:master"
+        }
+
         # Data must be a bytestring
-        data = data.encode("utf-8")
+        data = json.dumps(data_dict).encode("utf-8")
+
         # When you publish a message, the client returns a future.
         future = publisher.publish(topic_path, data)
         print(future.result())
